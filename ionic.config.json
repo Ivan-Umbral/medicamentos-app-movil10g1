@@ -1,5 +1,7 @@
 {
   "name": "medicamentos-app",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

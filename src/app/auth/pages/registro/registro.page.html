@@ -1,0 +1,83 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>Nuevo Usuario</ion-title>
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-grid fixed>
+        <form novalidate autocomplete="off" [formGroup]="form" (ngSubmit)="registroOnSubmit()">
+            <ion-row>
+                <ion-col size="12" size-lg="12" size-md="6" size-sm="6" size-xs="12">
+                    <ion-item>
+                        <ion-label position="floating">Nombre</ion-label>
+                        <ion-input appBlockCopyPaste type="text" maxlength="30" formControlName="nombre"></ion-input>
+                    </ion-item>
+                    <ion-item lines="none" *ngIf="isNombreValid">
+                        <ion-text class="form-error" color="danger"> {{ getErrorMessage('nombre') }} </ion-text>
+                    </ion-item>
+                </ion-col>
+                <ion-col size="12" size-lg="12" size-md="6" size-sm="6" size-xs="12">
+                    <ion-item>
+                        <ion-label position="floating">Apellido Paterno</ion-label>
+                        <ion-input appBlockCopyPaste type="text" maxlength="30" formControlName="apellidoPaterno"></ion-input>
+                    </ion-item>
+                    <ion-item lines="none" *ngIf="isApellidoPaternoValid">
+                        <ion-text class="form-error" color="danger"> {{ getErrorMessage('apellidoPaterno') }} </ion-text>
+                    </ion-item>
+                </ion-col>
+                <ion-col size="12" size-lg="12" size-md="6" size-sm="6" size-xs="12">
+                    <ion-item>
+                        <ion-label position="floating">Apellido Materno</ion-label>
+                        <ion-input appBlockCopyPaste type="text" maxlength="30" formControlName="apellidoMaterno"></ion-input>
+                    </ion-item>
+                    <ion-item lines="none" *ngIf="isApellidoMaternoValid">
+                        <ion-text class="form-error" color="danger"> {{ getErrorMessage('apellidoMaterno') }} </ion-text>
+                    </ion-item>
+                </ion-col>
+                <ion-col size="12" size-lg="12" size-md="6" size-sm="6" size-xs="12">
+                    <ion-item>
+                        <ion-label position="floating">Teléfono</ion-label>
+                        <ion-input appBlockCopyPaste type="tel" inputmode="tel" maxlength="10" formControlName="telefono"></ion-input>
+                    </ion-item>
+                    <ion-item lines="none" *ngIf="isTelefonoValid">
+                        <ion-text class="form-error" color="danger"> {{ getErrorMessage('telefono') }} </ion-text>
+                    </ion-item>
+                </ion-col>
+                <ion-col size="12" size-lg="12" size-md="6" size-sm="6" size-xs="12">
+                    <ion-item>
+                        <ion-label position="floating">Correo electrónico</ion-label>
+                        <ion-input appBlockCopyPaste type="email" maxlength="30" formControlName="correoElectronico"></ion-input>
+                    </ion-item>
+                    <ion-item lines="none" *ngIf="isEmailValid">
+                        <ion-text class="form-error" color="danger"> {{ getErrorMessage('correoElectronico') }} </ion-text>
+                    </ion-item>
+                </ion-col>
+                <ion-col size="12" size-lg="12" size-md="6" size-sm="6" size-xs="12">
+                    <ion-item>
+                        <ion-label position="floating">Username</ion-label>
+                        <ion-input appBlockCopyPaste type="text" maxlength="30" formControlName="username"></ion-input>
+                    </ion-item>
+                    <ion-item lines="none" *ngIf="isUsernameValid">
+                        <ion-text class="form-error" color="danger"> {{ getErrorMessage('username') }} </ion-text>
+                    </ion-item>
+                </ion-col>
+                <ion-col size="12" size-lg="12" size-md="6" size-sm="6" size-xs="12">
+                    <ion-item>
+                        <ion-label position="floating">Contraseña</ion-label>
+                        <ion-input appBlockCopyPaste type="password" maxlength="30" formControlName="contrasena"></ion-input>
+                    </ion-item>
+                    <ion-item lines="none" *ngIf="isPasswordValid">
+                        <ion-text class="form-error" color="danger"> {{ getErrorMessage('contrasena') }} </ion-text>
+                    </ion-item>
+                </ion-col>
+                <ion-col size="12" size-lg="12" size-md="6" size-sm="6" size-xs="12">
+                    <ion-button color="success" expand="block" type="submit" [disabled]="!form.valid">Registrar</ion-button>
+                </ion-col>
+            </ion-row>
+        </form>
+    </ion-grid>
+</ion-content>
