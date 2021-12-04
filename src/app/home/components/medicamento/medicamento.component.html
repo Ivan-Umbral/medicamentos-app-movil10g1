@@ -1,0 +1,20 @@
+<swiper [config]="config">
+    <ng-template swiperSlide *ngFor="let medicamento of medicamentos">
+        <ion-card (click)="navigate(medicamento.id)">
+            <img [src]="medicamento.imagen" />
+            <ion-card-header>
+                <!-- <ion-card-subtitle>Awesome Subtitle</ion-card-subtitle> -->
+                <ion-card-title> {{ medicamento.nombre }} </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+                <ion-text>
+                    <strong> {{ medicamento.precio | currency }} </strong>
+                </ion-text>
+                <br>
+                <ion-text>
+                    <strong>Vendido por: <u> {{ medicamento.farmacia.nombre }} </u> </strong>
+                </ion-text>
+            </ion-card-content>
+        </ion-card>
+    </ng-template>
+</swiper>

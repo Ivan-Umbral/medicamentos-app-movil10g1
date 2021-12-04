@@ -1,0 +1,49 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Detalle Medicamento</ion-title>
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-card *ngIf="medicamento">
+        <img [src]="medicamento.imagen">
+        <ion-card-header>
+            <ion-card-title> {{ medicamento.nombre }} </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+            <ion-text>
+                {{ medicamento.descripcion }}
+            </ion-text>
+            <br>
+            <ion-text>
+                <strong>Precio: {{ medicamento.precio | currency }} </strong>
+            </ion-text>
+            <br>
+            <ion-text>
+                <strong>Disponible:  {{ medicamento.stock }} </strong>
+            </ion-text>
+            <br>
+            <ion-text>
+                <strong>Fecha de caducidad: {{ medicamento.caducidad | date }} </strong>
+            </ion-text>
+            <br>
+            <ion-text>
+                <strong>Vendido por: <u> {{ medicamento.farmacia.nombre }} </u> </strong>
+            </ion-text>
+            <br>
+            <ion-text>
+                <ion-button (click)="substractCantidad()">
+                    <ion-icon name="remove-outline" slot="icon-only"></ion-icon>
+                </ion-button>
+                Cantidad: {{ cantidad }}
+                <ion-button (click)="addCantidad()">
+                    <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+                </ion-button>
+            </ion-text>
+            <ion-button (click)="comprar()" expand="block">Comprar</ion-button>
+        </ion-card-content>
+    </ion-card>
+</ion-content>
