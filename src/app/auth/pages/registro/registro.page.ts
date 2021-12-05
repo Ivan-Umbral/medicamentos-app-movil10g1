@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { AlertService } from '../../../shared/services/alert.service';
 import { ILoginResponse } from '../../models/interfaces/login.interface';
 import { IUserRegistroRequest } from '../../models/interfaces/registro.interface';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-registro',
@@ -22,6 +23,7 @@ export class RegistroPage implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder, private authService: AuthService,
     private router: Router, private alertService: AlertService,
+    private navCtrl: NavController,
     ) {
     this.createForm();
   }
@@ -240,7 +242,8 @@ export class RegistroPage implements OnInit, OnDestroy {
   private async saveSession(data: ILoginResponse): Promise<void> {
     const saved = await this.authService.saveSession(data);
     if (saved) {
-      this.router.navigateByUrl('/home');
+      /* this.router.navigateByUrl('/home'); */
+      this.navCtrl.navigateRoot('/home');
     } else {
       await this.alertService.showAlert('Error', 'Algo salió mal al guardar tu sesión, por favor intenta más tarde.');
       this.router.navigateByUrl('/auth/login');
