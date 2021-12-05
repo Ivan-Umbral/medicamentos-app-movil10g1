@@ -3,9 +3,14 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './shared/guards/auth.guard';
 
 const routes: Routes = [
-  {
+  /* {
     path: '',
     redirectTo: 'folder/Inbox',
+    pathMatch: 'full'
+  }, */
+  {
+    path: '',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
   {
@@ -23,7 +28,8 @@ const routes: Routes = [
   },
   {
     path: 'medicamentos',
-    loadChildren: () => import('./medicamento/medicamento.module').then(m => m.MedicamentoModule)
+    loadChildren: () => import('./medicamento/medicamento.module').then(m => m.MedicamentoModule),
+    canActivate: [AuthGuard]
   }
 ];
 

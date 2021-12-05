@@ -1,5 +1,5 @@
 <!-- <ion-split-pane contentId="main-content"> -->
-<ion-menu contentId="main-content" menuId="mainM" type="overlay">
+<ion-menu *ngIf="authService.isLogged" contentId="main-content" menuId="mainM" type="overlay" swipeGesture="false">
     <ion-header>
         <ion-toolbar color="primary">
             <ion-title>Menú</ion-title>
@@ -7,10 +7,10 @@
     </ion-header>
     <ion-content>
         <ion-list>
-            <ion-menu-toggle auto-hide="false" *ngIf="user">
+            <ion-menu-toggle auto-hide="false">
                 <ion-item (click)="navigate('/auth/login')">
                     <ion-icon slot="start" name="person-circle-outline"></ion-icon>
-                    <ion-label>Hola {{ user.username }} </ion-label>
+                    <ion-label>Hola {{ authService.user.username }} </ion-label>
                 </ion-item>
                 <ion-item (click)="navigate('/folder/Inbox')">
                     <ion-icon slot="start" name="person-circle-outline"></ion-icon>
@@ -25,12 +25,12 @@
     </ion-content>
     <ion-footer>
         <ion-list>
-            <ion-menu-toggle>
-                <ion-item (click)="logout()" lines="none">
-                    <ion-icon slot="start" name="log-out-outline"></ion-icon>
-                    <ion-label>Cerrar sesión</ion-label>
-                </ion-item>
-            </ion-menu-toggle>
+            <!-- <ion-menu-toggle auto-hide="false"> -->
+            <ion-item (click)="logout()" lines="none">
+                <ion-icon slot="start" name="log-out-outline"></ion-icon>
+                <ion-label>Cerrar sesión</ion-label>
+            </ion-item>
+            <!-- </ion-menu-toggle> -->
             <ion-item lines="none">
                 <ion-label>
                     <small>Medicamentos APP - Equipo sepa</small>

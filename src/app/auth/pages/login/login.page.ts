@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 import { IUserLoginRequest, ILoginResponse } from '../../models/interfaces/login.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CustomValidations } from '../../../common/security/custom-validations/custom-validations';
-import { NavController } from '@ionic/angular';
+import { NavController, MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +22,6 @@ export class LoginPage implements OnInit, OnDestroy {
   constructor(
       private fb: FormBuilder, private authService: AuthService,
       private alertService: AlertService, private router: Router,
-      private navCtrl: NavController,
     ) {
       this.createForm();
     }
@@ -97,7 +96,7 @@ export class LoginPage implements OnInit, OnDestroy {
   //#endregion
 
   private async login(): Promise<void> {
-    await this.alertService.showLoading('Verificando...');
+    await this.alertService.showLoading('Verificando, espere...');
     const body: IUserLoginRequest = {
       username: this.form.value.username,
       password: this.form.value.password
@@ -118,8 +117,7 @@ export class LoginPage implements OnInit, OnDestroy {
   private async saveSession(data: ILoginResponse): Promise<void> {
     const saved = await this.authService.saveSession(data);
     if (saved) {
-      this.navCtrl.navigateRoot('/home');
-      // this.router.navigateByUrl('/home');
+      this.router.navigateByUrl('/home', { replaceUrl: true });
     } else {
       this.alertService.showAlert('Error', 'Algo salió mal al guardar tu sesión, por favor intenta más tarde.');
     }

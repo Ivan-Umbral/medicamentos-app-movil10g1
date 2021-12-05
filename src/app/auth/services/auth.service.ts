@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { tap, map, catchError } from 'rxjs/operators';
 import { IUsernameExists, ICorreoExists, IUserRegistroRequest } from '../models/interfaces/registro.interface';
 import { AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { NavController } from '@ionic/angular';
+import { MenuController, NavController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +15,12 @@ import { NavController } from '@ionic/angular';
 export class AuthService {
 
   public isLogged = false;
+  public user: ILoginResponse;
 
   constructor(
       private http: HttpClient, private storage: StorageService,
       private router: Router, private navCtrl: NavController,
+      private menu: MenuController,
     ) {}
 
   public login(body: IUserLoginRequest): Observable<ILoginResponse> {
@@ -27,21 +29,38 @@ export class AuthService {
 
   public async saveSession(session: ILoginResponse): Promise<boolean> {
     const saved = await this.storage.saveSession(session);
+    if (saved) {
+      this.user = session;
+    }
     this.isLogged = saved;
     return saved;
   }
 
   public async logout(): Promise<void> {
     const destroyed = await this.storage.logout();
-    this.isLogged = !destroyed;
     if (destroyed) {
-      // this.router.navigateByUrl('/auth/login');
-      this.navCtrl.navigateRoot('/auth/login');
+      this.isLogged = !destroyed;
+      this.user = null;
+      this.router.navigateByUrl('auth/login', { replaceUrl: true });
+    } else {
+      this.router.navigateByUrl('auth/login', { replaceUrl: true });
     }
+  }
+
+  public async logoutComponent(): Promise<boolean> {
+    const destroyed = await this.storage.logout();
+    if (destroyed) {
+      this.isLogged = !destroyed;
+      return true;
+    }
+    return false;
   }
 
   public async isAuthenticated(): Promise<boolean> {
     const isAuthenticated = await this.storage.userSessionExists();
+    if (isAuthenticated) {
+      this.user = await this.getUserSession();
+    }
     this.isLogged = isAuthenticated;
     return isAuthenticated;
   }

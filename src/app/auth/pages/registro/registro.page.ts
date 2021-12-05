@@ -242,8 +242,7 @@ export class RegistroPage implements OnInit, OnDestroy {
   private async saveSession(data: ILoginResponse): Promise<void> {
     const saved = await this.authService.saveSession(data);
     if (saved) {
-      /* this.router.navigateByUrl('/home'); */
-      this.navCtrl.navigateRoot('/home');
+      this.router.navigateByUrl('/home', { replaceUrl: true });
     } else {
       await this.alertService.showAlert('Error', 'Algo salió mal al guardar tu sesión, por favor intenta más tarde.');
       this.router.navigateByUrl('/auth/login');

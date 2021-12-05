@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ILoginResponse } from '../../../auth/models/interfaces/login.interface';
 import { AuthService } from '../../../auth/services/auth.service';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-sidenav',
@@ -21,7 +22,7 @@ export class SidenavComponent implements OnInit {
   ];
   public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private router: Router, public authService: AuthService, private menu: MenuController) { }
 
   async ngOnInit() {
     this.user = await this.authService.getUserSession();
@@ -31,7 +32,8 @@ export class SidenavComponent implements OnInit {
     this.router.navigateByUrl(url);
   }
 
-  public logout(): void {
+  public async logout(): Promise<void> {
+    await this.menu.close('mainM');
     this.authService.logout();
   }
 
