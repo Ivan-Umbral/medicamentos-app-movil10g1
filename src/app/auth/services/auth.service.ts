@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { tap, map, catchError } from 'rxjs/operators';
 import { IUsernameExists, ICorreoExists, IUserRegistroRequest } from '../models/interfaces/registro.interface';
 import { AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { NavController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,10 @@ export class AuthService {
 
   public isLogged = false;
 
-  constructor(private http: HttpClient, private storage: StorageService, private router: Router) {}
+  constructor(
+      private http: HttpClient, private storage: StorageService,
+      private router: Router, private navCtrl: NavController,
+    ) {}
 
   public login(body: IUserLoginRequest): Observable<ILoginResponse> {
     return this.http.post<ILoginResponse>('/auth/login', body);
@@ -31,7 +35,8 @@ export class AuthService {
     const destroyed = await this.storage.logout();
     this.isLogged = !destroyed;
     if (destroyed) {
-      this.router.navigateByUrl('/auth/login');
+      // this.router.navigateByUrl('/auth/login');
+      this.navCtrl.navigateRoot('/auth/login');
     }
   }
 
