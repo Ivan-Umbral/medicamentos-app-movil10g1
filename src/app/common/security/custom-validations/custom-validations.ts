@@ -55,4 +55,9 @@ export class CustomValidations {
     }
     return null;
   }
+
+  public static creditCardExpMonthRange(control: AbstractControl): ValidationErrors | null {
+    const month = parseInt(control.value, 10);
+    return (month > 0 && month <= 12) ? null : { isExpMonthValid: false };
+  }
 }

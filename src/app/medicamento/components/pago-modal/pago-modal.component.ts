@@ -50,7 +50,9 @@ export class PagoModalComponent implements OnInit, OnDestroy {
       if (!isCreditCardNumberValid) {
         await this.alertService.showAlert('Error', 'El número de tarjeta no es válido.');
       } else if (!isExpDateValid) {
-        await this.alertService.showAlert('Error', 'La fecha de expiración (mes o año) no son válidos.');
+        await this.alertService.showAlert('Error', `
+        La fecha de expiración (mes o año) no son válidos, muy probablemente la fecha ya venció.
+        `);
       } else if (!isCvcValid) {
         await this.alertService.showAlert('Error', 'El CVC de la tarjeta no es válido');
       } else {
@@ -135,6 +137,9 @@ export class PagoModalComponent implements OnInit, OnDestroy {
         case 'isExpYearLessThan':
           errorMessage = `El año de expiración no debe ser menor al año actual.`;
           break;
+        case 'isExpMonthValid':
+          errorMessage = `El mes de expiración debe tener un valor entre 1 y 12.`;
+          break;
         case 'isExpYearMoreThan':
           errorMessage = `El año de expiración no debe ser mayor a 5 años.`;
           break;
@@ -159,7 +164,8 @@ export class PagoModalComponent implements OnInit, OnDestroy {
         Validators.required,
         Validators.minLength(1),
         Validators.maxLength(2),
-        CustomValidations.onlyNumbers
+        CustomValidations.onlyNumbers,
+        CustomValidations.creditCardExpMonthRange
       ]],
       expYear: ['', [
         Validators.required,
