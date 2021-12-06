@@ -30,6 +30,11 @@ const routes: Routes = [
     path: 'medicamentos',
     loadChildren: () => import('./medicamento/medicamento.module').then(m => m.MedicamentoModule),
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'ordenes',
+    loadChildren: () => import('./orden/orden.module').then(m => m.OrdenModule),
+    canActivate: [AuthGuard]
   }
 ];
 
