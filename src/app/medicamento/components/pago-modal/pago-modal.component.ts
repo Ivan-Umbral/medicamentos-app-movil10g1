@@ -9,39 +9,39 @@ import { Subscription } from 'rxjs';
 import { MedicamentoService } from '../../services/medicamento.service';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
- 
+
 @Component({
   selector: 'app-pago-modal',
   templateUrl: './pago-modal.component.html',
   styleUrls: ['./pago-modal.component.scss'],
 })
 export class PagoModalComponent implements OnInit, OnDestroy {
- 
+
   @Input() preOrderObject: IPagoModal;
   public form: FormGroup;
   private subscription$ = new Subscription();
- 
+
   constructor(
     private modalCtrl: ModalController, private fb: FormBuilder,
     private stripe: Stripe, private alertService: AlertService,
     private medService: MedicamentoService, private router: Router,
   ) { }
- 
+
   ngOnInit() {
     if (this.preOrderObject) {
       this.stripe.setPublishableKey(environment.stripePublishKey);
       this.createForm();
     }
   }
- 
+
   ngOnDestroy(): void {
     this.subscription$.unsubscribe();
   }
- 
+
   closeModal(): void {
     this.modalCtrl.dismiss();
   }
- 
+
   async pay(): Promise<void> {
     if (this.form.valid) {
       const isCreditCardNumberValid = await this.isCreditCardNumberValid();
@@ -65,7 +65,7 @@ export class PagoModalComponent implements OnInit, OnDestroy {
       this.alertService.showAlert('Error', 'Formulario inválido');
     }
   }
- 
+
   async isCreditCardNumberValid(): Promise<boolean> {
     return this.stripe.validateCardNumber(this.form.value.creditCardNumber)
       .then(
@@ -73,7 +73,7 @@ export class PagoModalComponent implements OnInit, OnDestroy {
         () => false,
       );
   }
- 
+
   async isExpDateValid(): Promise<boolean> {
     return this.stripe.validateExpiryDate(
       this.form.value.expMonth,
@@ -83,7 +83,7 @@ export class PagoModalComponent implements OnInit, OnDestroy {
       () => false,
     );
   }
- 
+
   async isCvcCardValid(): Promise<boolean> {
     return this.stripe.validateCVC(this.form.value.cvc)
       .then(
@@ -91,28 +91,28 @@ export class PagoModalComponent implements OnInit, OnDestroy {
         () => false,
       );
   }
- 
+
   //#region Form getters
   public get isCreditCardValid(): boolean {
     const field = this.form.get('creditCardNumber');
     return field.invalid && field.dirty;
   }
- 
+
   public get isExpMonthValid(): boolean {
     const field = this.form.get('expMonth');
     return field.invalid && field.dirty;
   }
- 
+
   public get isExpYearValid(): boolean {
     const field = this.form.get('expYear');
     return field.invalid && field.dirty;
   }
- 
+
   public get isCvcValid(): boolean {
     const field = this.form.get('cvc');
     return field.invalid && field.dirty;
   }
- 
+
   public getErrorMessage(formControlName: string): string {
     const formControl = this.form.get(formControlName);
     let errorMessage = '';
@@ -132,6 +132,12 @@ export class PagoModalComponent implements OnInit, OnDestroy {
         case 'onlyNumbers':
           errorMessage = `Este campo solo acepta números.`;
           break;
+        case 'isExpYearLessThan':
+          errorMessage = `El año de expiración no debe ser menor al año actual.`;
+          break;
+        case 'isExpYearMoreThan':
+          errorMessage = `El año de expiración no debe ser mayor a 5 años.`;
+          break;
         default:
           errorMessage = '';
           break;
@@ -140,7 +146,7 @@ export class PagoModalComponent implements OnInit, OnDestroy {
     return errorMessage;
   }
   //#endregion
- 
+
   private createForm(): void {
     this.form = this.fb.group({
       creditCardNumber: ['', [
@@ -159,7 +165,8 @@ export class PagoModalComponent implements OnInit, OnDestroy {
         Validators.required,
         Validators.minLength(4),
         Validators.maxLength(4),
-        CustomValidations.onlyNumbers
+        CustomValidations.onlyNumbers,
+        CustomValidations.creditCardExpYear
       ]],
       cvc: ['', [
         Validators.required,
@@ -169,7 +176,7 @@ export class PagoModalComponent implements OnInit, OnDestroy {
       ]]
     });
   }
- 
+
   private async createCardToken(): Promise<StripeCardTokenRes> {
     return this.stripe.createCardToken({
       // eslint-disable-next-line id-blacklist
@@ -182,7 +189,7 @@ export class PagoModalComponent implements OnInit, OnDestroy {
       () => null
     );
   }
- 
+
   private async createOrder(card: StripeCardTokenRes): Promise<void> {
     const body = this.getAllObject(card);
     await this.alertService.showLoading('Procesando, espere...');
@@ -194,13 +201,13 @@ export class PagoModalComponent implements OnInit, OnDestroy {
       this.alertService.showAlert('Error', 'Error al procesar el pago, intente más tarde.');
     }));
   }
- 
+
   private async orderCreated(data: IPagoStripeResponse): Promise<void> {
     await this.alertService.showAlert('Ok', `Pago confirmado con id ${data.stripeChargeId}`);
     await this.modalCtrl.dismiss();
     this.router.navigateByUrl('/home', { replaceUrl: true });
   }
- 
+
   private getAllObject(card: StripeCardTokenRes): IPagoStripeRequest {
     const object: IPagoStripeRequest = {
       cantidad: this.preOrderObject.cantidad,
@@ -216,5 +223,4 @@ export class PagoModalComponent implements OnInit, OnDestroy {
     };
     return object;
   }
- 
 }

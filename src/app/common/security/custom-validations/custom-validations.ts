@@ -41,4 +41,18 @@ export class CustomValidations {
   public static onlyNumbers(control: AbstractControl): ValidationErrors | null {
     return (!ONLY_NUMBERS_REGEX.test(control.value)) ? { onlyNumbers: false } : null;
   }
+
+  public static creditCardExpYear(control: AbstractControl): ValidationErrors | null {
+    const today = new Date();
+    const year = parseInt(control.value, 10);
+    const currentYear = today.getFullYear();
+    if (year < currentYear) {
+      return { isExpYearLessThan: true };
+    }
+    // currentYear = + 5;
+    if (year > (currentYear + 5)) {
+      return { isExpYearMoreThan: true };
+    }
+    return null;
+  }
 }
