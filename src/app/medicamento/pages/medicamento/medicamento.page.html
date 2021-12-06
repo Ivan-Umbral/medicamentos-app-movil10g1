@@ -35,15 +35,25 @@
             </ion-text>
             <br>
             <ion-text>
-                <ion-button (click)="substractCantidad()">
-                    <ion-icon name="remove-outline" slot="icon-only"></ion-icon>
-                </ion-button>
-                Cantidad: {{ cantidad }}
-                <ion-button (click)="addCantidad()">
-                    <ion-icon name="add-outline" slot="icon-only"></ion-icon>
-                </ion-button>
+                <strong>Cantidad: {{ cantidad }}</strong>
             </ion-text>
-            <ion-button (click)="comprar()" expand="block">Comprar</ion-button>
+            <br>
+            <ion-text>
+                <strong>Total: {{ precio | currency }} </strong>
+            </ion-text>
+            <ion-text>
+                <ion-range min="1" [max]="medicamento.stock" step="1" pin="true" snaps="true" color="dark" (ionChange)="onChange($event)">
+                    <ion-label slot="start">1</ion-label>
+                    <ion-label slot="end"> {{ medicamento.stock }} </ion-label>
+                </ion-range>
+                <!-- <ion-button (click)="substractCantidad()" size="small" color="dark">
+                    <ion-icon slot="icon-only" name="remove-outline"></ion-icon>
+                </ion-button>
+                <ion-button (click)="addCantidad()" size="small" color="dark">
+                    <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+                </ion-button> -->
+            </ion-text>
+            <ion-button (click)="comprar()" expand="block" color="success">Comprar</ion-button>
         </ion-card-content>
     </ion-card>
 </ion-content>
