@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { OrdenesPageRoutingModule } from './ordenes-routing.module';
 
 import { OrdenesPage } from './ordenes.page';
+import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { OrdenesPage } from './ordenes.page';
     IonicModule,
     OrdenesPageRoutingModule
   ],
-  declarations: [OrdenesPage]
+  declarations: [OrdenesPage, TimeAgoPipe]
 })
 export class OrdenesPageModule {}

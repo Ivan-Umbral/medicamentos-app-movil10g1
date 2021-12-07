@@ -8,18 +8,18 @@
     <ion-content>
         <ion-list>
             <ion-menu-toggle auto-hide="false">
-                <ion-item (click)="navigate('/auth/login')">
+                <ion-item>
                     <ion-icon slot="start" name="person-circle-outline"></ion-icon>
-                    <ion-label>Hola {{ authService.user.username }} </ion-label>
+                    <ion-label>Hola! {{ authService.user.username }} </ion-label>
                 </ion-item>
-                <ion-item (click)="navigate('/folder/Inbox')">
-                    <ion-icon slot="start" name="person-circle-outline"></ion-icon>
-                    <ion-label>Index</ion-label>
+                <ion-item (click)="navigateToOrder('/ordenes/all')">
+                    <ion-icon slot="start" name="cart-outline"></ion-icon>
+                    <ion-label>Mis ordenes</ion-label>
                 </ion-item>
-                <ion-item (click)="navigate('/home')">
+                <!-- <ion-item (click)="navigate('/home')">
                     <ion-icon slot="start" name="person-circle-outline"></ion-icon>
                     <ion-label>Home</ion-label>
-                </ion-item>
+                </ion-item> -->
             </ion-menu-toggle>
         </ion-list>
     </ion-content>
@@ -33,7 +33,7 @@
             <!-- </ion-menu-toggle> -->
             <ion-item lines="none">
                 <ion-label>
-                    <small>Medicamentos APP - Equipo sepa</small>
+                    <small>Medicamentos APP - Equipo 6</small>
                 </ion-label>
             </ion-item>
         </ion-list>

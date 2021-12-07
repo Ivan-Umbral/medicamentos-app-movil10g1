@@ -19,6 +19,7 @@ export class PagoModalComponent implements OnInit, OnDestroy {
 
   @Input() preOrderObject: IPagoModal;
   public form: FormGroup;
+  public isLoading = false;
   private subscription$ = new Subscription();
 
   constructor(
@@ -44,23 +45,28 @@ export class PagoModalComponent implements OnInit, OnDestroy {
 
   async pay(): Promise<void> {
     if (this.form.valid) {
+      this.isLoading = true;
       const isCreditCardNumberValid = await this.isCreditCardNumberValid();
       const isExpDateValid = await this.isExpDateValid();
       const isCvcValid = await this.isCvcCardValid();
       if (!isCreditCardNumberValid) {
         await this.alertService.showAlert('Error', 'El número de tarjeta no es válido.');
+        this.isLoading = false;
       } else if (!isExpDateValid) {
         await this.alertService.showAlert('Error', `
         La fecha de expiración (mes o año) no son válidos, muy probablemente la fecha ya venció.
         `);
+        this.isLoading = false;
       } else if (!isCvcValid) {
         await this.alertService.showAlert('Error', 'El CVC de la tarjeta no es válido');
+        this.isLoading = false;
       } else {
         const card = await this.createCardToken();
         if (card) {
           this.createOrder(card);
         } else {
           await this.alertService.showAlert('Error', 'No se pudo crear el token de seguridad para la tarjeta, intenta más tarde.');
+          this.isLoading = false;
         }
       }
     } else {
@@ -201,9 +207,11 @@ export class PagoModalComponent implements OnInit, OnDestroy {
     await this.alertService.showLoading('Procesando, espere...');
     this.subscription$.add(this.medService.createStripeOrder(body).subscribe((data) => {
       this.alertService.dismissLoading();
+      this.isLoading = false;
       this.orderCreated(data);
     }, (e) => {
       this.alertService.dismissLoading();
+      this.isLoading = false;
       this.alertService.showAlert('Error', 'Error al procesar el pago, intente más tarde.');
     }));
   }
@@ -211,7 +219,7 @@ export class PagoModalComponent implements OnInit, OnDestroy {
   private async orderCreated(data: IPagoStripeResponse): Promise<void> {
     await this.alertService.showAlert('Ok', `Pago confirmado con id ${data.stripeChargeId}`);
     await this.modalCtrl.dismiss();
-    this.router.navigateByUrl('/home', { replaceUrl: true });
+    this.router.navigateByUrl(`/ordenes/all/${data.usuario.id}`, { replaceUrl: true });
   }
 
   private getAllObject(card: StripeCardTokenRes): IPagoStripeRequest {

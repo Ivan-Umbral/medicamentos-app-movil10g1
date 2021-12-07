@@ -32,6 +32,10 @@ export class SidenavComponent implements OnInit {
     this.router.navigateByUrl(url);
   }
 
+  navigateToOrder(url: string) {
+    this.router.navigateByUrl(`${url}/${this.authService.user.id}`);
+  }
+
   public async logout(): Promise<void> {
     await this.menu.close('mainM');
     this.authService.logout();

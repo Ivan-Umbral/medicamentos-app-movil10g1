@@ -9,6 +9,7 @@ import { AlertService } from '../../../shared/services/alert.service';
 import { ILoginResponse } from '../../models/interfaces/login.interface';
 import { IUserRegistroRequest } from '../../models/interfaces/registro.interface';
 import { NavController } from '@ionic/angular';
+import { EMAIL_REGEX } from '../../../common/security/regex/regex';
 
 @Component({
   selector: 'app-registro',
@@ -19,6 +20,7 @@ export class RegistroPage implements OnInit, OnDestroy {
 
   public form: FormGroup;
   public subscription$ = new Subscription();
+  public isLoading = false;
 
   constructor(
     private fb: FormBuilder, private authService: AuthService,
@@ -53,6 +55,7 @@ export class RegistroPage implements OnInit, OnDestroy {
 
   public registroOnSubmit(): void {
     if (this.form.valid) {
+      this.isLoading = true;
       this.register();
     } else {
       this.alertService.showAlert('Error', 'El formulario no es válido');
@@ -112,6 +115,9 @@ export class RegistroPage implements OnInit, OnDestroy {
         case 'maxlength':
           errorMessage = `Este campo no puede tener más de ${formControlErrors.minlength.requiredLength} caracteres.`;
           break;
+        case 'pattern':
+          errorMessage = `Este campo debe contener un correo electrónico válido.`;
+          break;
         case 'onlyLetters':
           errorMessage = `Este campo solo acepta letras.`;
           break;
@@ -126,6 +132,9 @@ export class RegistroPage implements OnInit, OnDestroy {
             break;
         case 'blank':
           errorMessage = `Este campo no puede tener espacios.`;
+          break;
+        case 'noBlanksAtStartOrEnd':
+          errorMessage = `Este campo no permite espacios en blanco en el inicio o en el final.`;
           break;
         case 'twoBlanks':
           errorMessage = `Este campo no puede tener más de 1 espacio en blanco seguido.`;
@@ -155,6 +164,7 @@ export class RegistroPage implements OnInit, OnDestroy {
         Validators.minLength(3),
         Validators.maxLength(30),
         CustomValidations.onlyLetters,
+        CustomValidations.noBlanksAtStartOrEnd,
         CustomValidations.twoBlanks,
         CustomValidations.sqlInjection
       ]],
@@ -163,14 +173,16 @@ export class RegistroPage implements OnInit, OnDestroy {
         Validators.minLength(3),
         Validators.maxLength(30),
         CustomValidations.onlyLetters,
-        CustomValidations.twoBlanks,
+        // CustomValidations.twoBlanks,
+        CustomValidations.blank,
         CustomValidations.sqlInjection
       ]],
       apellidoMaterno: ['', [
         Validators.minLength(3),
         Validators.maxLength(30),
         CustomValidations.onlyLetters,
-        CustomValidations.twoBlanks,
+        CustomValidations.blank,
+        // CustomValidations.twoBlanks,
         CustomValidations.sqlInjection
       ]],
       telefono: ['', [
@@ -208,7 +220,9 @@ export class RegistroPage implements OnInit, OnDestroy {
         Validators.required,
         Validators.minLength(5),
         Validators.maxLength(30),
-        Validators.email
+        // CustomValidations.blank,
+        Validators.email,
+        // Validators.pattern(EMAIL_REGEX)
       ]]
     });
   }
@@ -217,9 +231,11 @@ export class RegistroPage implements OnInit, OnDestroy {
     await this.alertService.showLoading('Registrando espere...');
     this.subscription$.add(this.authService.userCreateOne(this.createUserRequest()).subscribe(data => {
       this.alertService.dismissLoading();
+      this.isLoading = false;
       this.saveSession(data);
     }, (e) => {
       this.alertService.dismissLoading();
+      this.isLoading = false;
       this.alertService.showAlert('Error', 'Algo salió mal, intenta más tarde');
     }));
   }

@@ -17,6 +17,7 @@ import { NavController, MenuController } from '@ionic/angular';
 export class LoginPage implements OnInit, OnDestroy {
 
   public form: FormGroup;
+  public isLoading = false;
   private subscription = new Subscription();
 
   constructor(
@@ -34,6 +35,7 @@ export class LoginPage implements OnInit, OnDestroy {
 
   loginOnSubmit(): void {
     if (this.form.valid) {
+      this.isLoading = true;
       this.login();
     } else {
       this.alertService.showAlert('Error', 'El formulario no es váido');
@@ -103,9 +105,11 @@ export class LoginPage implements OnInit, OnDestroy {
     };
     this.subscription.add(this.authService.login(body).subscribe(data => {
       this.alertService.dismissLoading();
+      this.isLoading = false;
       this.saveSession(data);
     }, (e: HttpErrorResponse) => {
       this.alertService.dismissLoading();
+      this.isLoading = false;
       if (e.status === 401) {
         this.alertService.showAlert('Error', 'Usuario o contraseña incorrectos');
       } else {

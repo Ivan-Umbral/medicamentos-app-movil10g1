@@ -42,6 +42,17 @@ export class CustomValidations {
     return (!ONLY_NUMBERS_REGEX.test(control.value)) ? { onlyNumbers: false } : null;
   }
 
+  public static noBlanksAtStartOrEnd(control: AbstractControl): ValidationErrors | null {
+    if (typeof control.value === 'string') {
+      if (control.value.length === 0) {
+        return null;
+      }
+      return (control.value[0].includes(' ') || control.value[control.value.length - 1].includes(' '))
+        ? { noBlanksAtStartOrEnd: true } : null;
+    }
+    return null;
+  }
+
   public static creditCardExpYear(control: AbstractControl): ValidationErrors | null {
     const today = new Date();
     const year = parseInt(control.value, 10);
